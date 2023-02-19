@@ -1,0 +1,36 @@
+mport React, { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+
+function App() {
+  const [data, setData] = useState([]);
+  const [period, setPeriod] = useState('7');
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch(`/wp-json/wp/v2/posts?per_page=${period}`);
+      const posts = await res.json();
+      setData(posts);
+    }
+    fetchData();
+  }, [period]);
+
+  return (
+    <>
+      <select value={period} onChange={e => setPeriod(e.target.value)}>
+        <option value="7">Last 7 Days</option>
+        <option value="15">Last 15 Days</option>
+        <option value="30">Last 1 Month</option>
+      </select>
+      <LineChart width={500} height={300} data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="id" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="id" stroke="#8884d8" />
+      </LineChart>
+    </>
+  );
+}
+
+export default App;

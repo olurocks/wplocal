@@ -1,0 +1,46 @@
+<?php
+/*
+Plugin Name: WP Dashboard Widget
+*/
+function enqueue_react_scripts() {
+    wp_enqueue_script( 'react', 'https://unpkg.com/react@17/umd/react.development.js', array(), '17', true );
+    wp_enqueue_script( 'react-dom', 'https://unpkg.com/react-dom@17/umd/react-dom.development.js', array(), '17', true );
+    wp_enqueue_script( 'recharts', 'https://unpkg.com/recharts@1.0.0-beta.3/umd/Recharts.min.js', array(), '1.0.0-beta.3', true );
+}
+add_action( 'wp_enqueue_scripts', 'enqueue_react_scripts' );
+
+function wp_dashboard_widget_enqueue_scripts() {
+    wp_enqueue_script( 'wp-dashboard-widget-script', plugin_dir_url( __FILE__ ) .'client/build/static/js/main.1c29acf7.js', array(), '1.0.0', true );
+}
+add_action( 'admin_enqueue_scripts', 'wp_dashboard_widget_enqueue_scripts' );
+
+function graph-data() {
+    $data = array (
+        
+  );
+}
+
+function register_my_react_graph_route() {
+    register_rest_route( 'my-react-graph/v1', '/data', array(
+        'methods' => 'GET',
+       'callback' => 'my_react_graph_data',
+    ) );
+}
+add_action( 'rest_api_init', 'register_my_react_graph_route' );
+
+function wp_dashboard_widget_add_widget() {
+    wp_add_dashboard_widget(
+        'wp_dashboard_widget',
+        'WP Dashboard Widget',
+        'wp_dashboard_widget_render'
+    );
+}
+
+
+
+
+add_action( 'wp_dashboard_setup', 'wp_dashboard_widget_add_widget' );
+
+function wp_dashboard_widget_render() {
+    echo '<div id="wp-dashboard-widget"></div>';
+}
